@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 
 // Global Variables
-export const collections: { players?: mongoDB.Collection, duels?: mongoDB.Collection} = {}
+export const collections: { players?: mongoDB.Collection, duels?: mongoDB.Collection, highlights?: mongoDB.Collection} = {}
 
 export let containerClient: ContainerClient; 
 // Initialize Connection
@@ -23,9 +23,11 @@ export async function connectToDatabase () {
  
   const playersCollection: mongoDB.Collection = db.collection(process.env.PLAYERS_COLLECTION_NAME as string);
   const duelsCollection: mongoDB.Collection = db.collection(process.env.DUELS_COLLECTION_NAME as string);
+  const highlightsCollection: mongoDB.Collection = db.collection(process.env.HIGHLIGHTS_COLLECTION_NAME as string);
 
   collections.players = playersCollection;
   collections.duels = duelsCollection;
+  collections.highlights = highlightsCollection;
 
   // connect to blob storage here too
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.CONNECTION_STRING as string);

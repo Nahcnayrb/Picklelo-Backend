@@ -7,6 +7,7 @@ import cors from 'cors';
 import loginRouter from './routes/login';
 import duelsRouter from './routes/duels';
 import pfpsRouter from './routes/pfps';
+import highlightsRouter from "./routes/highlights";
 dotenv.config();
 
 const app: Express = express();
@@ -26,6 +27,7 @@ connectToDatabase()
     app.use('/login', loginRouter);
     app.use('/duels', duelsRouter);
     app.use('/pfps', pfpsRouter);
+    app.use('/highlights', highlightsRouter);
 
 
     app.listen(port, () => {

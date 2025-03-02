@@ -4,7 +4,6 @@ import fs from 'fs';
 import { BlockBlobClient} from '@azure/storage-blob';
 
 export async function uploadPfp(request:Request<{username: string},{},{}>, response:Response) {
-    console.log("UPLOAD HAS BEEN HIT XD");
     if (request.file) {
         // case file detected
         const blobClient:BlockBlobClient = containerClient.getBlockBlobClient(request.params.username);

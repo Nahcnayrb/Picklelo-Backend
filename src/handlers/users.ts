@@ -83,7 +83,6 @@ export async function createUser(request:Request<{},{}, CreateUserDto>, response
             return response.status(500).send(error.message);
         }
     }
-
 }
 
 export async function updateUser(request:Request<{username: string},{}, CreateUserDto>, response:Response) {
