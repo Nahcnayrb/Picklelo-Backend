@@ -40,10 +40,6 @@ export async function createUser(request:Request<{},{}, CreateUserDto>, response
     // if yes, abort registration since both must be unique
 
     try {
-        // let username:string = request.body.username;
-        // let email:string = request.body.email;
-        // let elo:number = request.body.elo;
-        // let password:string = request.body.password;
         const playerData = request.body as CreateUserDto;
 
 
@@ -62,7 +58,6 @@ export async function createUser(request:Request<{},{}, CreateUserDto>, response
             // hash password
 
             const hashedPassword = await bcrypt.hash(playerData.password, 10);
-                console.log("Hashed Password:", hashedPassword);
 
             playerData.email = playerData.email.trim().toLowerCase();
             playerData.username = playerData.username.trim().toLowerCase();

@@ -9,10 +9,4 @@ const upload = multer({ dest: 'uploads/' });
 router.put('/:username', upload.single('file'), uploadPfp);
 
 
-// don't really need to delete tbh
-// already have flag in user to know if we need to 
-// router.delete('/:username', deletePfp);
-
-
-
 export default router;

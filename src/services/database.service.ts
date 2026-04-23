@@ -34,12 +34,6 @@ export async function connectToDatabase () {
   containerClient = blobServiceClient.getContainerClient(containerName);
   const exists = await containerClient.exists();
 
-  // const blobClient = containerClient.getBlobClient('0353.jpg');
-  // const exists = await blobClient.exists();
-
-  // const response = await blobClient.download(0);
-  // const contentType = response.contentType || 'image/jpeg';
-
   console.log(`successfully connected to pfp blob storage: ${exists}`);
 
   console.log(`Successfully connected to database: ${db.databaseName} and collections: ${playersCollection.collectionName} and ${duelsCollection.collectionName}`);
