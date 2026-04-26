@@ -14,8 +14,6 @@ export async function getUsers(request:Request, response:Response) {
             response.status(500).send(error.message);
         }
     }
-
-
 } 
 
 export async function getUserByUsername(request:Request<{username: string},{},{}>, response:Response) {
