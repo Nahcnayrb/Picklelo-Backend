@@ -1,7 +1,7 @@
 import { Router,Request, Response } from "express";
 import bodyParser, { BodyParser} from "body-parser";
 import { collections } from "../services/database.service";
-import { CreateUserDto } from "../dtos/CreateUser.dto";
+import { UserDto } from "../dtos/User.dto";
 import bcrypt from "bcryptjs";
 import { BlobServiceClient } from '@azure/storage-blob';
 
@@ -14,13 +14,13 @@ router.post('/', jsonParser, async (request:Request, response:Response) => {
         let loginKey:string = request.body.key; // this field can either be username or password
         loginKey = loginKey.toLowerCase();
         const password:string = request.body.password;
-        const players = (await collections.players!.find({$or: [{username: loginKey},{email: loginKey}]}).toArray()) as CreateUserDto[];
+        const players:UserDto[] = (await collections.players!.find({$or: [{username: loginKey},{email: loginKey}]}).toArray()) as UserDto[];
 
         if (players.length > 0) {
             // case found account with matching key
             // verify password
-            const player:CreateUserDto = players[0];
-            const isMatch = await bcrypt.compare(password, player.password);
+            const player:UserDto = players[0];
+            const isMatch:boolean = await bcrypt.compare(password, player.password);
             
             if (isMatch) {
                 // return the login token stored on database
@@ -44,12 +44,12 @@ router.get("/authenticate/:token", jsonParser, async (request:Request, response:
 
     const token:string = request.params.token;
 
-    const players = (await collections.players!.find({token: token}).toArray()) as CreateUserDto[];
+    const players = (await collections.players!.find({token: token}).toArray()) as UserDto[];
     
     if (players.length == 0) {
         return response.status(404).send("could not find user given token.")
     } else {
-        const player:CreateUserDto = players[0]
+        const player:UserDto = players[0]
         return response.status(200).send(player)
     }
 

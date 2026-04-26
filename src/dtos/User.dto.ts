@@ -1,7 +1,7 @@
 import type { WithId, Document, ObjectId } from 'mongodb'
 
 
-export interface CreateUserDto extends WithId<Document> {
+export interface UserDto extends WithId<Document> {
     id: ObjectId;
     username: string;
     name: string;

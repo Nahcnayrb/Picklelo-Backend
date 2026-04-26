@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import { containerClient } from "../services/database.service";
 import fs from 'fs';
-import { BlockBlobClient} from '@azure/storage-blob';
+import { BlockBlobClient, BlobUploadCommonResponse} from '@azure/storage-blob';
 
 export async function uploadPfp(request:Request<{username: string},{},{}>, response:Response) {
     if (request.file) {
@@ -9,7 +9,7 @@ export async function uploadPfp(request:Request<{username: string},{},{}>, respo
         const blobClient:BlockBlobClient = containerClient.getBlockBlobClient(request.params.username);
 
         // Upload the file to Azure Blob Storage
-        const uploadBlobResponse = await blobClient.uploadFile(request.file.path, {
+        const uploadBlobResponse:BlobUploadCommonResponse = await blobClient.uploadFile(request.file.path, {
         blobHTTPHeaders: { blobContentType: request.file.mimetype } // Set content type
         });
 

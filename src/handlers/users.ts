@@ -1,5 +1,5 @@
 import {Request, Response} from "express"
-import { CreateUserDto } from "../dtos/CreateUser.dto";
+import { UserDto } from "../dtos/User.dto";
 import { collections } from "../services/database.service";
 import bcrypt from "bcryptjs";
 import * as crypto from "crypto";
@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 
 export async function getUsers(request:Request, response:Response) {
     try {
-        const players = (await collections.players!.find({}).toArray()) as CreateUserDto[];
+        const players:UserDto[] = (await collections.players!.find({}).toArray()) as UserDto[];
             response.status(200).send(players);
     } catch (error) {
         if (error instanceof Error) {
@@ -18,7 +18,7 @@ export async function getUsers(request:Request, response:Response) {
 
 export async function getUserByUsername(request:Request<{username: string},{},{}>, response:Response) {
     try {
-        const players = (await collections.players!.find({username: request.params.username}).toArray()) as CreateUserDto[];
+        const players:UserDto[] = (await collections.players!.find({username: request.params.username}).toArray()) as UserDto[];
         if (players.length == 0) {
             response.status(400).send("could not find the specified user.")
         } else {
@@ -32,17 +32,17 @@ export async function getUserByUsername(request:Request<{username: string},{},{}
 
 } 
 
-export async function createUser(request:Request<{},{}, CreateUserDto>, response:Response) {
+export async function createUser(request:Request<{},{}, UserDto>, response:Response) {
 
     // check if username or email is taken
     // if yes, abort registration since both must be unique
 
     try {
-        const playerData = request.body as CreateUserDto;
+        const playerData:UserDto = request.body as UserDto;
 
 
-        const playersWithUsername = (await collections.players!.find({username: playerData.username}).toArray()) as CreateUserDto[];
-        const playersWithEmail = (await collections.players!.find({email: playerData.email}).toArray()) as CreateUserDto[];
+        const playersWithUsername:UserDto[] = (await collections.players!.find({username: playerData.username}).toArray()) as UserDto[];
+        const playersWithEmail:UserDto[] = (await collections.players!.find({email: playerData.email}).toArray()) as UserDto[];
 
         if (playersWithUsername.length > 0) {
             return response.status(400).send("username is already taken.");
@@ -55,7 +55,7 @@ export async function createUser(request:Request<{},{}, CreateUserDto>, response
             
             // hash password
 
-            const hashedPassword = await bcrypt.hash(playerData.password, 10);
+            const hashedPassword:string = await bcrypt.hash(playerData.password, 10);
 
             playerData.email = playerData.email.trim().toLowerCase();
             playerData.username = playerData.username.trim().toLowerCase();
@@ -78,10 +78,10 @@ export async function createUser(request:Request<{},{}, CreateUserDto>, response
     }
 }
 
-export async function updateUser(request:Request<{username: string},{}, CreateUserDto>, response:Response) {
+export async function updateUser(request:Request<{username: string},{}, UserDto>, response:Response) {
 
     try {
-        const playerData = request.body as CreateUserDto;
+        const playerData:UserDto = request.body as UserDto;
         const query = {username: request.params.username};
 
         const result = await collections.players?.updateOne(query, {$set: playerData})

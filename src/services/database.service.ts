@@ -30,9 +30,9 @@ export async function connectToDatabase () {
   collections.highlights = highlightsCollection;
 
   // connect to blob storage here too
-  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.CONNECTION_STRING as string);
+  const blobServiceClient:BlobServiceClient = BlobServiceClient.fromConnectionString(process.env.CONNECTION_STRING as string);
   containerClient = blobServiceClient.getContainerClient(containerName);
-  const exists = await containerClient.exists();
+  const exists:boolean = await containerClient.exists();
 
   console.log(`successfully connected to pfp blob storage: ${exists}`);
 

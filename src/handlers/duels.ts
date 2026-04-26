@@ -1,11 +1,11 @@
-import { CreateDuelDto } from "../dtos/CreateDuel.dto";
+import { DuelDto } from "../dtos/Duel.dto";
 import {Request, Response} from "express"
 import { collections } from "../services/database.service";
 import { ObjectId } from "mongodb";
 
 export async function getDuels(request:Request, response:Response) {
     try {
-        const duels = (await collections.duels!.find({}).toArray()) as CreateDuelDto[];
+        const duels:DuelDto[] = (await collections.duels!.find({}).toArray()) as DuelDto[];
             response.status(200).send(duels);
     } catch (error) {
         if (error instanceof Error) {
@@ -16,7 +16,7 @@ export async function getDuels(request:Request, response:Response) {
 
 export async function getDuelsByUsername(request:Request<{username:string},{},{}>, response:Response) {
     try {
-        const duels = (await collections.duels!.find({$or: [{higherEloUsername: request.params.username}, {lowerEloUsername: request.params.username}]}).toArray()) as CreateDuelDto[];
+        const duels:DuelDto[] = (await collections.duels!.find({$or: [{higherEloUsername: request.params.username}, {lowerEloUsername: request.params.username}]}).toArray()) as DuelDto[];
         response.status(200).send(duels);
     } catch (error) {
         if (error instanceof Error) {
@@ -26,8 +26,8 @@ export async function getDuelsByUsername(request:Request<{username:string},{},{}
 
 }
 
-export async function createDuel(request:Request<{},{}, CreateDuelDto>, response:Response) {
-    const duelData = request.body as CreateDuelDto;
+export async function createDuel(request:Request<{},{}, DuelDto>, response:Response) {
+    const duelData:DuelDto = request.body as DuelDto;
 
     duelData.date = new Date();
     
@@ -38,12 +38,11 @@ export async function createDuel(request:Request<{},{}, CreateDuelDto>, response
     : response.status(500).send("Failed to create a new duel.");
 }
 
-export async function updateDuel(request:Request<{duelId:string},{}, CreateDuelDto>,response:Response) {
+export async function updateDuel(request:Request<{duelId:string},{}, DuelDto>,response:Response) {
 
     try {
-        const duelData = request.body as CreateDuelDto;
-        // duelData.date = new Date();
-        const duelId =  request.params.duelId;
+        const duelData:DuelDto = request.body as DuelDto;
+        const duelId:string =  request.params.duelId;
         const query = {_id: new ObjectId(duelId)};
 
         const result = await collections.duels?.updateOne(query, {$set: duelData})
@@ -62,7 +61,7 @@ export async function updateDuel(request:Request<{duelId:string},{}, CreateDuelD
 export async function deleteDuel(request:Request<{duelId:string},{},{}>, response:Response) {
 
     try {
-        const duelId =  request.params.duelId;
+        const duelId:string =  request.params.duelId;
         const query = {_id: new ObjectId(duelId)}
         const result = await collections.duels?.deleteOne(query)
 

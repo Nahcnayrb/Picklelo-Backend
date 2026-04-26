@@ -1,11 +1,11 @@
 
-import { CreateHighlightDto } from "../dtos/CreateHighlight.dto";
+import { HighlightDto } from "../dtos/Highlight.dto";
 import {Request, Response} from "express"
 import { collections } from "../services/database.service";
 import { ObjectId } from "mongodb";
 
-export async function createHighlight(request:Request<{},{}, CreateHighlightDto>, response:Response) {
-    const highlightData = request.body as CreateHighlightDto;
+export async function createHighlight(request:Request<{},{}, HighlightDto>, response:Response) {
+    const highlightData:HighlightDto = request.body as HighlightDto;
 
     highlightData.date = new Date();
     
@@ -18,7 +18,7 @@ export async function createHighlight(request:Request<{},{}, CreateHighlightDto>
 
 export async function getHighlights(request:Request, response:Response) {
     try {
-        const highlights = (await collections.highlights!.find({}).toArray()) as CreateHighlightDto[];
+        const highlights:HighlightDto[] = (await collections.highlights!.find({}).toArray()) as HighlightDto[];
             response.status(200).send(highlights);
     } catch (error) {
         if (error instanceof Error) {
@@ -30,7 +30,7 @@ export async function getHighlights(request:Request, response:Response) {
 export async function deleteHighlight(request:Request<{highlightId:string},{},{}>, response:Response) {
 
     try {
-        const highlightId =  request.params.highlightId;
+        const highlightId:string =  request.params.highlightId;
         const query = {_id: new ObjectId(highlightId)}
         const result = await collections.highlights?.deleteOne(query)
 
