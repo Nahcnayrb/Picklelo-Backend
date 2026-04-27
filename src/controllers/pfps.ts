@@ -1,25 +1,26 @@
 import {Request, Response} from "express";
-import { containerClient } from "../services/database.service";
-import fs from 'fs';
-import { BlockBlobClient, BlobUploadCommonResponse} from '@azure/storage-blob';
+import * as pfpsService from "../services/pfps.service";
+import { BlobStorageError } from "../errors/BlobStorageError";
 
 export async function uploadPfp(request:Request<{username: string},{},{}>, response:Response) {
     if (request.file) {
-        // case file detected
-        const blobClient:BlockBlobClient = containerClient.getBlockBlobClient(request.params.username);
+        // case file is in request
+        try {
+            const username:string = request.params.username
+            await pfpsService.uploadPfp(request.file, username);
 
-        // Upload the file to Azure Blob Storage
-        const uploadBlobResponse:BlobUploadCommonResponse = await blobClient.uploadFile(request.file.path, {
-        blobHTTPHeaders: { blobContentType: request.file.mimetype } // Set content type
-        });
-
-        response.status(200).send(uploadBlobResponse);
-  
-        // remove the file from the local server after uploading to Azure Blob Storage
-        fs.unlinkSync(request.file.path);
+            response.status(200).send("Pfp uploaded to blob storage successfully.");
+        } catch (error) {
+            if (error instanceof BlobStorageError) {
+                response.status(400).send("Error occured while uploading pfp to blob storage")
+            } else if (error instanceof Error) {
+                response.status(500).send(error.message);
+            }
+        }
 
     } else {
-        response.status(500).send('could not detect file');
+        // case no file in req
+        response.status(404).send('Could not detect file');
     }
 
 }
