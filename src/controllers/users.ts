@@ -45,17 +45,16 @@ export async function createUser(request:Request<{},{}, UserDto>, response:Respo
         });
     } catch (error) {
         if (error instanceof UsernameTakenError) {
-            return response.status(400).send("Username already taken.");
+            response.status(400).send("Username already taken.");
         } else if (error instanceof EmailTakenError) {
-            return response.status(401).send("Email already taken.");
+            response.status(401).send("Email already taken.");
         } else if (error instanceof Error) {
-            return response.status(500).send(error.message);
+            response.status(500).send(error.message);
         }
     }
 }
 
 export async function updateUser(request:Request<{username: string},{}, UserDto>, response:Response) {
-
     try {
         const playerData:UserDto = request.body as UserDto;
         await userService.updateUser(request.params.username, playerData);
@@ -65,7 +64,7 @@ export async function updateUser(request:Request<{username: string},{}, UserDto>
         if (error instanceof UpdateError) {
             response.status(500).send("Failed to update player.");
         } else if (error instanceof Error) {
-            return response.status(500).send(error.message);
+            response.status(500).send(error.message);
         }
     }
 

@@ -59,7 +59,7 @@ export async function createUser(user: UserDto) {
         user.token = crypto.randomUUID();
 
         const result = await userRepository.createUser(user);
-        return result?.insertedId;
+        return result!.insertedId;
     }
 }
 

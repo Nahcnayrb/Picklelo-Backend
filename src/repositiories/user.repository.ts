@@ -19,10 +19,10 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function createUser(user: UserDto) {
-    return collections.players?.insertOne(user);
+    return collections.players!.insertOne(user);
 }
 
 export async function updateUser(username: string, userData: UserDto) {
     const query = {username: username};
-    return collections.players?.updateOne(query, {$set: userData});
+    return collections.players!.updateOne(query, {$set: userData});
 }

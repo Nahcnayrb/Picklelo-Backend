@@ -9,7 +9,7 @@ export async function createHighlight(request:Request<{},{}, HighlightDto>, resp
 
     highlightData.date = new Date();
     
-    const result = await collections.highlights?.insertOne(highlightData);
+    const result = await collections.highlights!.insertOne(highlightData);
 
     return result
     ? response.status(201).send("Created a new highlight.")
@@ -32,7 +32,7 @@ export async function deleteHighlight(request:Request<{highlightId:string},{},{}
     try {
         const highlightId:string =  request.params.highlightId;
         const query = {_id: new ObjectId(highlightId)}
-        const result = await collections.highlights?.deleteOne(query)
+        const result = await collections.highlights!.deleteOne(query)
 
         return result
         ? response.status(201).send("Deleted highlight.")

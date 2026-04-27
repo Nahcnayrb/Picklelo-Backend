@@ -2,10 +2,14 @@ import { DuelDto } from "../dtos/Duel.dto";
 import {Request, Response} from "express"
 import { collections } from "../services/database.service";
 import { ObjectId } from "mongodb";
+import * as duelService from "../services/duel.service";
+import { CreateError } from "../errors/CreateError";
+import { UpdateError } from "../errors/UpdateError";
+import { NotFoundError } from "../errors/NotFoundError";
 
 export async function getDuels(request:Request, response:Response) {
     try {
-        const duels:DuelDto[] = (await collections.duels!.find({}).toArray()) as DuelDto[];
+        const duels:DuelDto[] = await duelService.getAllDuels();
             response.status(200).send(duels);
     } catch (error) {
         if (error instanceof Error) {
@@ -16,62 +20,62 @@ export async function getDuels(request:Request, response:Response) {
 
 export async function getDuelsByUsername(request:Request<{username:string},{},{}>, response:Response) {
     try {
-        const duels:DuelDto[] = (await collections.duels!.find({$or: [{higherEloUsername: request.params.username}, {lowerEloUsername: request.params.username}]}).toArray()) as DuelDto[];
+        const duels:DuelDto[] = await duelService.getDuelsByUsername(request.params.username);
+        // totally ok if duels is empty here
+        // a player can have 0 duels if never played
         response.status(200).send(duels);
     } catch (error) {
         if (error instanceof Error) {
             response.status(500).send(error.message);
         }
     }
-
 }
 
 export async function createDuel(request:Request<{},{}, DuelDto>, response:Response) {
-    const duelData:DuelDto = request.body as DuelDto;
-
-    duelData.date = new Date();
     
-    const result = await collections.duels?.insertOne(duelData);
+    try {
+        const duelData:DuelDto = request.body as DuelDto;
+        duelService.createDuel(duelData);
 
-    return result
-    ? response.status(201).send("Created a new duel.")
-    : response.status(500).send("Failed to create a new duel.");
+        response.status(201).send("Created a new duel.");
+    } catch (error) {
+        if (error instanceof CreateError) {
+            response.status(500).send("Failed to create a new duel.");
+        } else if (error instanceof Error) {
+            response.status(500).send(error.message);
+        }
+    }
 }
 
 export async function updateDuel(request:Request<{duelId:string},{}, DuelDto>,response:Response) {
-
     try {
         const duelData:DuelDto = request.body as DuelDto;
         const duelId:string =  request.params.duelId;
-        const query = {_id: new ObjectId(duelId)};
 
-        const result = await collections.duels?.updateOne(query, {$set: duelData})
+        duelService.updateDuel(duelId, duelData);
 
-        return result
-        ? response.status(201).send("Updated duel.")
-        : response.status(500).send("Failed to update duel.");
+        response.status(201).send("Updated duel.")
     } catch (error) {
-        if (error instanceof Error) {
-            return response.status(500).send(error.message);
+        if (error instanceof UpdateError) {
+            response.status(500).send("Failed to update duel.");
+        } else if (error instanceof Error) {
+            response.status(500).send(error.message);
         }
     }
 
 }
 
 export async function deleteDuel(request:Request<{duelId:string},{},{}>, response:Response) {
-
     try {
         const duelId:string =  request.params.duelId;
-        const query = {_id: new ObjectId(duelId)}
-        const result = await collections.duels?.deleteOne(query)
+        duelService.deleteDuel(duelId);
 
-        return result
-        ? response.status(201).send("Deleted duel.")
-        : response.status(500).send("Failed to delete duel.");
+        response.status(201).send("Deleted duel.");
     } catch (error) {
-        if (error instanceof Error) {
+        if (error instanceof NotFoundError) {
+            response.status(500).send("Could not delete duel with the given duelId.");
+        } else if (error instanceof Error) {
             return response.status(500).send(error.message);
         }
     }
-
 }

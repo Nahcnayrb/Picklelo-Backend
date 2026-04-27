@@ -1,0 +1,1 @@
+export class CreateError extends Error {};
