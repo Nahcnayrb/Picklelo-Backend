@@ -1,7 +1,5 @@
 import { DuelDto } from "../dtos/Duel.dto";
 import {Request, Response} from "express"
-import { collections } from "../services/database.service";
-import { ObjectId } from "mongodb";
 import * as duelService from "../services/duel.service";
 import { CreateError } from "../errors/CreateError";
 import { UpdateError } from "../errors/UpdateError";
