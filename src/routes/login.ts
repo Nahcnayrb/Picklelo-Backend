@@ -1,9 +1,8 @@
 import { Router,Request, Response } from "express";
 import bodyParser, { BodyParser} from "body-parser";
 import { collections } from "../services/database.service";
-import { UserDto } from "../dtos/User.dto";
+import { UserSensitiveDto, UserSensitiveProjection} from "../dtos/UserSensitive.dto";
 import bcrypt from "bcryptjs";
-import { BlobServiceClient } from '@azure/storage-blob';
 
 const router = Router();
 const jsonParser = bodyParser.json();
@@ -14,12 +13,22 @@ router.post('/', jsonParser, async (request:Request, response:Response) => {
         let loginKey:string = request.body.key; // this field can either be username or password
         loginKey = loginKey.toLowerCase();
         const password:string = request.body.password;
-        const players:UserDto[] = (await collections.players!.find({$or: [{username: loginKey},{email: loginKey}]}).toArray()) as UserDto[];
+        const players:UserSensitiveDto[] = (await collections.players!.find(
+            {$or: 
+                [
+                    {username: loginKey},
+                    {email: loginKey}
+                ]
+            },
+            {
+                projection: UserSensitiveProjection
+            }
+        ).toArray()) as UserSensitiveDto[];
 
         if (players.length > 0) {
             // case found account with matching key
             // verify password
-            const player:UserDto = players[0];
+            const player:UserSensitiveDto = players[0];
             const isMatch:boolean = await bcrypt.compare(password, player.password);
             
             if (isMatch) {
@@ -28,7 +37,7 @@ router.post('/', jsonParser, async (request:Request, response:Response) => {
             }
 
         }
-
+        // case incorrect pw
         return response.status(404).send("login credentials are incorrect.");
 
     } catch (error) {
@@ -43,13 +52,12 @@ router.post('/', jsonParser, async (request:Request, response:Response) => {
 router.get("/authenticate/:token", jsonParser, async (request:Request, response:Response) => {
 
     const token:string = request.params.token;
+    const players:UserSensitiveDto[] = (await collections.players!.find({token: token}).toArray()) as UserSensitiveDto[];
 
-    const players = (await collections.players!.find({token: token}).toArray()) as UserDto[];
-    
     if (players.length == 0) {
         return response.status(404).send("could not find user given token.")
     } else {
-        const player:UserDto = players[0]
+        const player:UserSensitiveDto = players[0]
         return response.status(200).send(player)
     }
 

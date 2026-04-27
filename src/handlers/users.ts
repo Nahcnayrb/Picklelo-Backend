@@ -1,13 +1,14 @@
 import {Request, Response} from "express"
 import { UserDto } from "../dtos/User.dto";
+import { UserPublicDto, UserPublicProjection } from "../dtos/UserPublic.dto";
 import { collections } from "../services/database.service";
 import bcrypt from "bcryptjs";
 import * as crypto from "crypto";
-import { ObjectId } from "mongodb";
 
 export async function getUsers(request:Request, response:Response) {
     try {
-        const players:UserDto[] = (await collections.players!.find({}).toArray()) as UserDto[];
+        const players:UserPublicDto[] = (await collections.players!.find({},
+            {projection: UserPublicProjection}).toArray()) as UserPublicDto[];
             response.status(200).send(players);
     } catch (error) {
         if (error instanceof Error) {
@@ -18,7 +19,8 @@ export async function getUsers(request:Request, response:Response) {
 
 export async function getUserByUsername(request:Request<{username: string},{},{}>, response:Response) {
     try {
-        const players:UserDto[] = (await collections.players!.find({username: request.params.username}).toArray()) as UserDto[];
+        const players:UserPublicDto[] = (await collections.players!.find({username: request.params.username},
+            {projection: UserPublicProjection}).toArray()) as UserPublicDto[];
         if (players.length == 0) {
             response.status(400).send("could not find the specified user.")
         } else {
@@ -67,7 +69,15 @@ export async function createUser(request:Request<{},{}, UserDto>, response:Respo
 
             
             return result
-            ? response.status(201).send({id: result.insertedId, username: playerData.username, email:  playerData.email, elo:  playerData.elo, password:  playerData.password, token: playerData.token})
+            ? response.status(201).send(
+                {
+                    id: result.insertedId,
+                    username: playerData.username,
+                    email:  playerData.email,
+                    elo:  playerData.elo,
+                    password:  playerData.password,
+                    token: playerData.token
+                })
             : response.status(500).send("Failed to create a new player.");
         }
 
