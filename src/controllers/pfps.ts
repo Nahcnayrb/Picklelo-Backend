@@ -23,7 +23,3 @@ export async function uploadPfp(request:Request<{username: string},{},{}>, respo
     }
 
 }
-
-export async function deletePfp(request:Request, response:Response) {
-
-}

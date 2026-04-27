@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getDuels, createDuel, updateDuel, deleteDuel, getDuelsByUsername } from "../handlers/duels";
+import { getDuels, createDuel, updateDuel, deleteDuel, getDuelsByUsername } from "../controllers/duels";
 import bodyParser, { BodyParser} from "body-parser";
 
 const router = Router();

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getHighlights, createHighlight, deleteHighlight } from "../handlers/highlights";
+import { getHighlights, createHighlight, deleteHighlight } from "../controllers/highlights";
 import bodyParser, { BodyParser} from "body-parser";
 
 const router = Router();

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadPfp } from "../handlers/pfps";
+import { uploadPfp } from "../controllers/pfps";
 import multer from "multer";
 
 const router = Router();

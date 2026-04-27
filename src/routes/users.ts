@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, getUserByUsername, getUsers, updateUser } from "../handlers/users";
+import { createUser, getUserByUsername, getUsers, updateUser } from "../controllers/users";
 import bodyParser, { BodyParser} from "body-parser";
 
 const router = Router();
