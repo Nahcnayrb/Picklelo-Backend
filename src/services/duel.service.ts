@@ -52,7 +52,6 @@ export async function deleteDuel(duelId: string) {
 
     // once we find the duel, revert the elos of the players involved if the match is completed
     if (duel.higherEloScore != null && duel.lowerEloScore != null) {
-        console.log("revert elos yay");
         // case duel is completed, need to revert elos
         await revertPlayerElos(duel);
     }

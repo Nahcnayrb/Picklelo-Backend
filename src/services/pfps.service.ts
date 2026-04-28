@@ -11,7 +11,7 @@ export async function uploadPfp(file:any, username: string) {
     const uploadBlobResponse:BlobUploadCommonResponse = await blobClient.uploadFile(file.path, {
     blobHTTPHeaders: { blobContentType: file.mimetype }
     });
-    console.log(uploadBlobResponse._response.status)
+
     // status should be 201 if uploaded successfully
     if (uploadBlobResponse._response.status !== 201) {
         throw new BlobStorageError();
