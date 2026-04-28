@@ -33,7 +33,7 @@ export async function createDuel(request:Request<{},{}, DuelDto>, response:Respo
     
     try {
         const duelData:DuelDto = request.body as DuelDto;
-        duelService.createDuel(duelData);
+        await duelService.createDuel(duelData);
 
         response.status(201).send("Created a new duel.");
     } catch (error) {
@@ -50,7 +50,7 @@ export async function updateDuel(request:Request<{duelId:string},{}, DuelDto>,re
         const duelData:DuelDto = request.body as DuelDto;
         const duelId:string =  request.params.duelId;
 
-        duelService.updateDuel(duelId, duelData);
+        await duelService.updateDuel(duelId, duelData);
 
         response.status(201).send("Updated duel.")
     } catch (error) {
@@ -66,12 +66,14 @@ export async function updateDuel(request:Request<{duelId:string},{}, DuelDto>,re
 export async function deleteDuel(request:Request<{duelId:string},{},{}>, response:Response) {
     try {
         const duelId:string =  request.params.duelId;
-        duelService.deleteDuel(duelId);
+        await duelService.deleteDuel(duelId);
 
         response.status(201).send("Deleted duel.");
     } catch (error) {
         if (error instanceof NotFoundError) {
-            response.status(500).send("Could not delete duel with the given duelId.");
+            response.status(404).send("Could not delete duel with the given duelId.");
+        } else if (error instanceof UpdateError) {
+            response.status(500).send("Error occured while updating player elos");
         } else if (error instanceof Error) {
             return response.status(500).send(error.message);
         }

@@ -15,6 +15,10 @@ export async function getDuelsByUsername(username: string) {
     ).toArray();
 }
 
+export async function getDuelById(id: string) {
+    return collections.duels!.findOne({_id: new ObjectId(id)});
+}
+
 export async function createDuel(duel: DuelDto) {
     return collections.duels!.insertOne(duel);
 }

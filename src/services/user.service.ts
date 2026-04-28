@@ -70,5 +70,4 @@ export async function updateUser(username: string, userData: UserDto) {
         // case fail
         throw new UpdateError();
     }
-
 }
