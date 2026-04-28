@@ -1,6 +1,7 @@
 import { collections } from "../services/database.service";
 import { UserPublicProjection } from "../dtos/UserPublic.dto";
 import { UserDto } from "../dtos/User.dto";
+import { UserSensitiveProjection } from "../dtos/UserSensitive.dto";
 
 export async function getAllUsers() {
     return collections.players!.find({},
@@ -16,6 +17,25 @@ export async function getUserByUsername(username: string) {
 export async function getUserByEmail(email: string) {
     return collections.players!.findOne({email: email},
         {projection: UserPublicProjection});
+}
+
+export async function getSensitiveUsersByUsernameOrEmail(loginKey: string) {
+
+    return collections.players!.find(
+            {$or: 
+                [
+                    {username: loginKey},
+                    {email: loginKey}
+                ]
+            },
+            {
+                projection: UserSensitiveProjection
+            }
+    ).toArray();
+}
+
+export async function getPlayerByToken(token: string) {
+    return collections.players!.findOne({token: token});
 }
 
 export async function createUser(user: UserDto) {

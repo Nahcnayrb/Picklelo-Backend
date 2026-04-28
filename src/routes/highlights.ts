@@ -5,12 +5,13 @@ import bodyParser, { BodyParser} from "body-parser";
 const router = Router();
 
 const jsonParser = bodyParser.json()
-// /duels
+// GET /highlights
 router.get('/',  getHighlights);
 
-
+// POST /highlights
 router.post('/', jsonParser, createHighlight)
 
+// DELETE /highlights/<highlightId>
 router.delete("/:highlightId", deleteHighlight)
 
 export default router; 

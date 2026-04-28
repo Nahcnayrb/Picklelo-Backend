@@ -4,7 +4,7 @@ import fs from 'fs';
 import { BlobStorageError } from '../errors/BlobStorageError';
 
 export async function uploadPfp(file:any, username: string) {
-
+    // Note: file is uploaded to local server so that it can be processed
     const blobClient:BlockBlobClient = containerClient.getBlockBlobClient(username);
 
     // Upload the file to Azure Blob Storage

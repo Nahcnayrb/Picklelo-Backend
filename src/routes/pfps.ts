@@ -6,6 +6,7 @@ const router = Router();
 
 const upload = multer({ dest: 'uploads/' });
 
+// PUT /pfps/<username>
 router.put('/:username', upload.single('file'), uploadPfp);
 
 

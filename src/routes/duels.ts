@@ -5,16 +5,19 @@ import bodyParser, { BodyParser} from "body-parser";
 const router = Router();
 
 const jsonParser = bodyParser.json()
-// /duels
+// GET /duels
 router.get('/',  getDuels);
 
-// only get duels concerning a specific user
+// GET /duels/<username>
 router.get('/:username',  getDuelsByUsername);
 
+// POST /duels
 router.post('/', jsonParser, createDuel)
 
+// PUT /duels/<duelId>
 router.put("/:duelId", jsonParser, updateDuel)
 
+// DELETE /duels/<duelId>
 router.delete("/:duelId", deleteDuel)
 
 export default router; 

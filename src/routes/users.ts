@@ -5,16 +5,17 @@ import bodyParser, { BodyParser} from "body-parser";
 const router = Router();
 
 const jsonParser = bodyParser.json()
-// /players
+
+// GET /players
 router.get('/',  getUsers);
 
-// /players/123
+// GET/players/<username>
 router.get('/:username', getUserByUsername)
 
-// /players/
-
+// POST /players
 router.post('/', jsonParser, createUser)
 
+// PUT /players/<username>
 router.put("/:username", jsonParser, updateUser)
 
 export default router;

@@ -75,7 +75,7 @@ export async function deleteDuel(request:Request<{duelId:string},{},{}>, respons
         } else if (error instanceof UpdateError) {
             response.status(500).send("Error occured while updating player elos");
         } else if (error instanceof Error) {
-            return response.status(500).send(error.message);
+            response.status(500).send(error.message);
         }
     }
 }
