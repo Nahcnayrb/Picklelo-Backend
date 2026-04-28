@@ -1,4 +1,4 @@
-import { UserSensitiveDto, UserSensitiveProjection} from "../dtos/UserSensitive.dto";
+import { UserSensitiveDto } from "../dtos/UserSensitive.dto";
 import bcrypt from "bcryptjs";
 import * as userRepository from "../repositiories/user.repository";
 import { LoginError } from "../errors/LoginError";
